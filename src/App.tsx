@@ -52,7 +52,6 @@ function AppRoutes() {
 }
 
 function PlaceholderPage({ title }: { title: string }) {
-  const { AppLayout } = require("@/components/AppLayout");
   return (
     <AppLayout>
       <div className="flex items-center justify-center h-64">
