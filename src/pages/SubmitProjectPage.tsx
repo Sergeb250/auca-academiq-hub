@@ -113,6 +113,14 @@ const SubmitProjectPage = () => {
               )}
               <p className="text-xs text-muted-foreground">This profile will be displayed on your project's public page.</p>
             </div>
+
+            {/* Co-Author Search */}
+            <CoAuthorSearch
+              coAuthors={coAuthors}
+              onAdd={(author) => setCoAuthors((prev) => [...prev, author])}
+              onRemove={(campusId) => setCoAuthors((prev) => prev.filter((a) => a.campusId !== campusId))}
+              currentUserCampusId={user?.campusId}
+            />
             <div className="space-y-2">
               <Label>Project Title *</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter your project title" />
