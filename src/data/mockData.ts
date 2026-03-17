@@ -48,7 +48,7 @@ export const mockProjects = [
   {
     id: "3", title: "Machine Learning for Early Crop Disease Detection",
     type: "Thesis",
-    authors: [{ name: "Grace Uwimana", initials: "GU", role: "Student" }],
+    authors: [{ name: "Grace Uwimana", initials: "GU", role: "Student", email: "g.uwimana@auca.ac.rw", department: "Computer Science", campusId: "AUCA-2022-0289", year: "Year 5" }] as AuthorProfile[],
     supervisor: "Prof. Agnes Ntamwiza",
     department: "Computer Science", year: "2025", level: "Postgraduate",
     abstract: "A deep learning approach using convolutional neural networks to detect crop diseases from leaf images, trained on a dataset of Rwandan agricultural crops. The model achieves 97.3% accuracy on cassava, maize, and bean diseases, with a mobile-optimized version deployed for field use by agricultural extension workers.",
