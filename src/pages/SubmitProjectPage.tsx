@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthorProfileCard } from "@/components/AuthorProfileCard";
+import { CoAuthorSearch } from "@/components/CoAuthorSearch";
+import type { AuthorProfile } from "@/data/mockData";
 
 const SubmitProjectPage = () => {
   const { toast } = useToast();
