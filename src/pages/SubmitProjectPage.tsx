@@ -111,6 +111,10 @@ const SubmitProjectPage = () => {
               <p className="text-xs text-muted-foreground">This profile will be displayed on your project's public page.</p>
             </div>
             <div className="space-y-2">
+              <Label>Project Title *</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter your project title" />
+            </div>
+            <div className="space-y-2">
               <Label>Abstract *</Label>
               <Textarea value={abstract} onChange={(e) => setAbstract(e.target.value)} placeholder="Write a detailed abstract..." rows={5} />
             </div>
