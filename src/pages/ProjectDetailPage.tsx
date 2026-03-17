@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { mockProjects } from "@/data/mockData";
+import { AuthorProfileCard } from "@/components/AuthorProfileCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Eye, CalendarDays, Github, Star, GitFork, FileText, ExternalLink, Clock, CheckCircle } from "lucide-react";
+import { ArrowLeft, Eye, CalendarDays, Github, Star, GitFork, FileText, ExternalLink, Clock, CheckCircle, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const typeColors: Record<string, string> = {
