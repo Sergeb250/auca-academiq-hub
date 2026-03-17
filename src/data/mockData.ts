@@ -69,7 +69,7 @@ export const mockProjects = [
   {
     id: "4", title: "Blockchain-Based Land Registry for Rwanda",
     type: "Student Project",
-    authors: [{ name: "Eric Habimana", initials: "EH", role: "Student" }],
+    authors: [{ name: "Eric Habimana", initials: "EH", role: "Student", email: "e.habimana@auca.ac.rw", department: "Information Technology", campusId: "AUCA-2023-0198", year: "Year 4" }] as AuthorProfile[],
     supervisor: "Dr. Sarah Mugisha",
     department: "Information Technology", year: "2024", level: "Undergraduate",
     abstract: "A decentralized land registration system using Ethereum smart contracts to ensure transparent, tamper-proof land ownership records. The system digitizes the land transfer process, reducing bureaucratic delays from an average of 45 days to under 24 hours while maintaining full auditability.",
