@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthorProfileCard } from "@/components/AuthorProfileCard";
+import { CoAuthorSearch } from "@/components/CoAuthorSearch";
+import type { AuthorProfile } from "@/data/mockData";
 
 const SubmitProjectPage = () => {
   const { toast } = useToast();
@@ -29,6 +31,7 @@ const SubmitProjectPage = () => {
   const [keywordInput, setKeywordInput] = useState("");
   const [technologies, setTechnologies] = useState<string[]>([]);
   const [techInput, setTechInput] = useState("");
+  const [coAuthors, setCoAuthors] = useState<AuthorProfile[]>([]);
 
   // Step 2
   const [fileName, setFileName] = useState("");
@@ -110,6 +113,14 @@ const SubmitProjectPage = () => {
               )}
               <p className="text-xs text-muted-foreground">This profile will be displayed on your project's public page.</p>
             </div>
+
+            {/* Co-Author Search */}
+            <CoAuthorSearch
+              coAuthors={coAuthors}
+              onAdd={(author) => setCoAuthors((prev) => [...prev, author])}
+              onRemove={(campusId) => setCoAuthors((prev) => prev.filter((a) => a.campusId !== campusId))}
+              currentUserCampusId={user?.campusId}
+            />
             <div className="space-y-2">
               <Label>Project Title *</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter your project title" />
