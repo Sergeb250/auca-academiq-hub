@@ -90,7 +90,7 @@ export const mockProjects = [
   {
     id: "5", title: "Kinyarwanda Sentiment Analysis using NLP",
     type: "Publication",
-    authors: [{ name: "Prof. Agnes Ntamwiza", initials: "AN", role: "Lecturer" }, { name: "David Mugabo", initials: "DM", role: "Student" }],
+    authors: [{ name: "Prof. Agnes Ntamwiza", initials: "AN", role: "Lecturer", email: "a.ntamwiza@auca.ac.rw", department: "Computer Science", campusId: "AUCA-FAC-0015" }, { name: "David Mugabo", initials: "DM", role: "Student", email: "d.mugabo@auca.ac.rw", department: "Computer Science", campusId: "AUCA-2022-0312", year: "Year 5" }] as AuthorProfile[],
     department: "Computer Science", year: "2025", level: "Faculty Research",
     abstract: "A novel natural language processing framework for sentiment analysis in Kinyarwanda text, leveraging transfer learning from multilingual transformer models. Our KinyaBERT model outperforms existing baselines by 15% on the newly curated KinyaSenti dataset of 50,000 annotated social media posts.",
     keywords: ["NLP", "Kinyarwanda", "Sentiment Analysis", "BERT", "Transfer Learning"],
