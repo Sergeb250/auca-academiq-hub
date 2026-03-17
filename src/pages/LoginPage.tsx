@@ -35,9 +35,11 @@ const LoginPage = () => {
       <div className="w-full max-w-md">
         {/* Logo & Branding */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary mb-4">
-            <GraduationCap className="w-10 h-10 text-primary-foreground" />
-          </div>
+          <img
+            src="/auca-logo.png"
+            alt="Adventist University of Central Africa Logo"
+            className="w-24 h-24 object-contain mx-auto mb-4"
+          />
           <h1 className="text-2xl font-heading font-bold text-foreground">
             AUCA Connect
           </h1>
