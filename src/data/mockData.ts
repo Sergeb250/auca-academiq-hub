@@ -1,7 +1,17 @@
+export interface AuthorProfile {
+  name: string;
+  initials: string;
+  role: string;
+  email?: string;
+  department?: string;
+  campusId?: string;
+  year?: string;
+}
+
 export const mockProjects = [
   {
     id: "1", title: "Smart Parking System using IoT Sensors", type: "Student Project",
-    authors: [{ name: "Jean Pierre Habimana", initials: "JH", role: "Student" }],
+    authors: [{ name: "Jean Pierre Habimana", initials: "JH", role: "Student", email: "student@auca.ac.rw", department: "Information Technology", campusId: "AUCA-2023-0147", year: "Year 4" }] as AuthorProfile[],
     supervisor: "Dr. Sarah Mugisha",
     department: "Information Technology", year: "2024", level: "Undergraduate",
     abstract: "A comprehensive IoT-based smart parking management system that uses ultrasonic sensors and a mobile application to help drivers find available parking spaces in real-time. The system includes a web dashboard for parking lot administrators to monitor occupancy rates and generate analytics reports. Tested across three parking facilities in Kigali with 95% accuracy in space detection.",
