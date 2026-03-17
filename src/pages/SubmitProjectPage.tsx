@@ -15,6 +15,7 @@ import { AuthorProfileCard } from "@/components/AuthorProfileCard";
 const SubmitProjectPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
 
