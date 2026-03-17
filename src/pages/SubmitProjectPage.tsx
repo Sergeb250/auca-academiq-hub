@@ -31,6 +31,7 @@ const SubmitProjectPage = () => {
   const [keywordInput, setKeywordInput] = useState("");
   const [technologies, setTechnologies] = useState<string[]>([]);
   const [techInput, setTechInput] = useState("");
+  const [coAuthors, setCoAuthors] = useState<AuthorProfile[]>([]);
 
   // Step 2
   const [fileName, setFileName] = useState("");
