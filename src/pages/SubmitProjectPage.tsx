@@ -92,9 +92,23 @@ const SubmitProjectPage = () => {
         {/* Step 1 */}
         {step === 1 && (
           <div className="bg-card rounded-xl border border-border p-6 card-shadow space-y-5">
+            {/* Author Profile - auto-populated from logged-in account */}
             <div className="space-y-2">
-              <Label>Project Title *</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter your project title" />
+              <Label className="flex items-center gap-2"><User className="w-4 h-4 text-primary" /> Author (Linked Account)</Label>
+              {user && (
+                <AuthorProfileCard
+                  author={{
+                    name: user.name,
+                    initials: user.avatarInitials,
+                    role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
+                    email: user.email,
+                    department: user.department,
+                    campusId: user.campusId,
+                    year: user.year,
+                  }}
+                />
+              )}
+              <p className="text-xs text-muted-foreground">This profile will be displayed on your project's public page.</p>
             </div>
             <div className="space-y-2">
               <Label>Abstract *</Label>
