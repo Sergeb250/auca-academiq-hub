@@ -106,7 +106,7 @@ export const mockProjects = [
   {
     id: "6", title: "Solar-Powered Water Purification IoT System",
     type: "Student Project",
-    authors: [{ name: "Patrick Kamanzi", initials: "PK", role: "Student" }],
+    authors: [{ name: "Patrick Kamanzi", initials: "PK", role: "Student", email: "p.kamanzi@auca.ac.rw", department: "Engineering", campusId: "AUCA-2023-0256", year: "Year 4" }] as AuthorProfile[],
     supervisor: "Dr. Jean Baptiste Niyonzima",
     department: "Engineering", year: "2025", level: "Undergraduate",
     abstract: "An IoT-enabled water purification system powered by solar energy, with real-time water quality monitoring and mobile alerts for rural communities. Deployed in 3 pilot villages, serving 450+ households.",
