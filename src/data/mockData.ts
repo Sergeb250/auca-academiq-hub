@@ -32,7 +32,7 @@ export const mockProjects = [
   {
     id: "2", title: "Impact of Mobile Banking on Financial Inclusion in Rwanda",
     type: "Publication",
-    authors: [{ name: "Dr. Sarah Mugisha", initials: "SM", role: "Lecturer" }, { name: "Prof. Emmanuel Nkurunziza", initials: "EN", role: "Lecturer" }],
+    authors: [{ name: "Dr. Sarah Mugisha", initials: "SM", role: "Lecturer", email: "lecturer@auca.ac.rw", department: "Computer Science", campusId: "AUCA-FAC-0032" }, { name: "Prof. Emmanuel Nkurunziza", initials: "EN", role: "Lecturer", email: "admin@auca.ac.rw", department: "Academic Affairs", campusId: "AUCA-ADM-0001" }] as AuthorProfile[],
     department: "Economics", year: "2024", level: "Faculty Research",
     abstract: "This research paper examines the transformative impact of mobile banking services on financial inclusion in rural Rwanda, analyzing adoption patterns and socioeconomic outcomes across 12 provinces. Through a mixed-methods approach combining survey data from 2,400 respondents with qualitative interviews, we demonstrate that mobile banking adoption has increased financial access by 340% in rural areas since 2018.",
     keywords: ["Mobile Banking", "Financial Inclusion", "Rwanda", "Fintech", "Rural Development"],
