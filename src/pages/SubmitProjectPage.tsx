@@ -6,13 +6,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Upload, Github, X, FileText, Sparkles, Loader2 } from "lucide-react";
+import { CheckCircle, Upload, Github, X, FileText, Sparkles, Loader2, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { AuthorProfileCard } from "@/components/AuthorProfileCard";
 
 const SubmitProjectPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
 
@@ -89,6 +92,24 @@ const SubmitProjectPage = () => {
         {/* Step 1 */}
         {step === 1 && (
           <div className="bg-card rounded-xl border border-border p-6 card-shadow space-y-5">
+            {/* Author Profile - auto-populated from logged-in account */}
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2"><User className="w-4 h-4 text-primary" /> Author (Linked Account)</Label>
+              {user && (
+                <AuthorProfileCard
+                  author={{
+                    name: user.name,
+                    initials: user.avatarInitials,
+                    role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
+                    email: user.email,
+                    department: user.department,
+                    campusId: user.campusId,
+                    year: user.year,
+                  }}
+                />
+              )}
+              <p className="text-xs text-muted-foreground">This profile will be displayed on your project's public page.</p>
+            </div>
             <div className="space-y-2">
               <Label>Project Title *</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter your project title" />

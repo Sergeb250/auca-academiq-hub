@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { mockProjects } from "@/data/mockData";
+import { AuthorProfileCard } from "@/components/AuthorProfileCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Eye, CalendarDays, Github, Star, GitFork, FileText, ExternalLink, Clock, CheckCircle } from "lucide-react";
+import { ArrowLeft, Eye, CalendarDays, Github, Star, GitFork, FileText, ExternalLink, Clock, CheckCircle, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const typeColors: Record<string, string> = {
@@ -71,14 +72,28 @@ const ProjectDetailPage = () => {
             <span>{project.year}</span>
             <span>{project.level}</span>
           </div>
-          <div className="flex items-center gap-2 mt-3">
+        </div>
+
+        {/* Author Profile Cards */}
+        <div className="bg-card rounded-xl border border-border p-6 card-shadow">
+          <h3 className="font-heading font-semibold text-foreground mb-4 flex items-center gap-2">
+            <Users className="w-5 h-5 text-primary" /> {project.authors.length > 1 ? "Authors" : "Author"}
+          </h3>
+          <div className="space-y-3">
             {project.authors.map((a) => (
-              <div key={a.initials} className="flex items-center gap-1.5">
-                <div className="w-7 h-7 rounded-full bg-primary/10 text-primary text-xs font-semibold flex items-center justify-center">{a.initials}</div>
-                <span className="text-sm text-foreground">{a.name}</span>
-                <Badge variant="secondary" className="text-[10px]">{a.role}</Badge>
-              </div>
+              <AuthorProfileCard key={a.initials} author={a} />
             ))}
+            {project.supervisor && (
+              <AuthorProfileCard
+                author={{
+                  name: project.supervisor,
+                  initials: project.supervisor.split(" ").map(w => w[0]).filter(Boolean).slice(-2).join(""),
+                  role: "Lecturer",
+                  department: project.department,
+                }}
+                isSupervisor
+              />
+            )}
           </div>
         </div>
 

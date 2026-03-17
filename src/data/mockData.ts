@@ -1,7 +1,17 @@
+export interface AuthorProfile {
+  name: string;
+  initials: string;
+  role: string;
+  email?: string;
+  department?: string;
+  campusId?: string;
+  year?: string;
+}
+
 export const mockProjects = [
   {
     id: "1", title: "Smart Parking System using IoT Sensors", type: "Student Project",
-    authors: [{ name: "Jean Pierre Habimana", initials: "JH", role: "Student" }],
+    authors: [{ name: "Jean Pierre Habimana", initials: "JH", role: "Student", email: "student@auca.ac.rw", department: "Information Technology", campusId: "AUCA-2023-0147", year: "Year 4" }] as AuthorProfile[],
     supervisor: "Dr. Sarah Mugisha",
     department: "Information Technology", year: "2024", level: "Undergraduate",
     abstract: "A comprehensive IoT-based smart parking management system that uses ultrasonic sensors and a mobile application to help drivers find available parking spaces in real-time. The system includes a web dashboard for parking lot administrators to monitor occupancy rates and generate analytics reports. Tested across three parking facilities in Kigali with 95% accuracy in space detection.",
@@ -22,7 +32,7 @@ export const mockProjects = [
   {
     id: "2", title: "Impact of Mobile Banking on Financial Inclusion in Rwanda",
     type: "Publication",
-    authors: [{ name: "Dr. Sarah Mugisha", initials: "SM", role: "Lecturer" }, { name: "Prof. Emmanuel Nkurunziza", initials: "EN", role: "Lecturer" }],
+    authors: [{ name: "Dr. Sarah Mugisha", initials: "SM", role: "Lecturer", email: "lecturer@auca.ac.rw", department: "Computer Science", campusId: "AUCA-FAC-0032" }, { name: "Prof. Emmanuel Nkurunziza", initials: "EN", role: "Lecturer", email: "admin@auca.ac.rw", department: "Academic Affairs", campusId: "AUCA-ADM-0001" }] as AuthorProfile[],
     department: "Economics", year: "2024", level: "Faculty Research",
     abstract: "This research paper examines the transformative impact of mobile banking services on financial inclusion in rural Rwanda, analyzing adoption patterns and socioeconomic outcomes across 12 provinces. Through a mixed-methods approach combining survey data from 2,400 respondents with qualitative interviews, we demonstrate that mobile banking adoption has increased financial access by 340% in rural areas since 2018.",
     keywords: ["Mobile Banking", "Financial Inclusion", "Rwanda", "Fintech", "Rural Development"],
@@ -38,7 +48,7 @@ export const mockProjects = [
   {
     id: "3", title: "Machine Learning for Early Crop Disease Detection",
     type: "Thesis",
-    authors: [{ name: "Grace Uwimana", initials: "GU", role: "Student" }],
+    authors: [{ name: "Grace Uwimana", initials: "GU", role: "Student", email: "g.uwimana@auca.ac.rw", department: "Computer Science", campusId: "AUCA-2022-0289", year: "Year 5" }] as AuthorProfile[],
     supervisor: "Prof. Agnes Ntamwiza",
     department: "Computer Science", year: "2025", level: "Postgraduate",
     abstract: "A deep learning approach using convolutional neural networks to detect crop diseases from leaf images, trained on a dataset of Rwandan agricultural crops. The model achieves 97.3% accuracy on cassava, maize, and bean diseases, with a mobile-optimized version deployed for field use by agricultural extension workers.",
@@ -59,7 +69,7 @@ export const mockProjects = [
   {
     id: "4", title: "Blockchain-Based Land Registry for Rwanda",
     type: "Student Project",
-    authors: [{ name: "Eric Habimana", initials: "EH", role: "Student" }],
+    authors: [{ name: "Eric Habimana", initials: "EH", role: "Student", email: "e.habimana@auca.ac.rw", department: "Information Technology", campusId: "AUCA-2023-0198", year: "Year 4" }] as AuthorProfile[],
     supervisor: "Dr. Sarah Mugisha",
     department: "Information Technology", year: "2024", level: "Undergraduate",
     abstract: "A decentralized land registration system using Ethereum smart contracts to ensure transparent, tamper-proof land ownership records. The system digitizes the land transfer process, reducing bureaucratic delays from an average of 45 days to under 24 hours while maintaining full auditability.",
@@ -80,7 +90,7 @@ export const mockProjects = [
   {
     id: "5", title: "Kinyarwanda Sentiment Analysis using NLP",
     type: "Publication",
-    authors: [{ name: "Prof. Agnes Ntamwiza", initials: "AN", role: "Lecturer" }, { name: "David Mugabo", initials: "DM", role: "Student" }],
+    authors: [{ name: "Prof. Agnes Ntamwiza", initials: "AN", role: "Lecturer", email: "a.ntamwiza@auca.ac.rw", department: "Computer Science", campusId: "AUCA-FAC-0015" }, { name: "David Mugabo", initials: "DM", role: "Student", email: "d.mugabo@auca.ac.rw", department: "Computer Science", campusId: "AUCA-2022-0312", year: "Year 5" }] as AuthorProfile[],
     department: "Computer Science", year: "2025", level: "Faculty Research",
     abstract: "A novel natural language processing framework for sentiment analysis in Kinyarwanda text, leveraging transfer learning from multilingual transformer models. Our KinyaBERT model outperforms existing baselines by 15% on the newly curated KinyaSenti dataset of 50,000 annotated social media posts.",
     keywords: ["NLP", "Kinyarwanda", "Sentiment Analysis", "BERT", "Transfer Learning"],
@@ -96,7 +106,7 @@ export const mockProjects = [
   {
     id: "6", title: "Solar-Powered Water Purification IoT System",
     type: "Student Project",
-    authors: [{ name: "Patrick Kamanzi", initials: "PK", role: "Student" }],
+    authors: [{ name: "Patrick Kamanzi", initials: "PK", role: "Student", email: "p.kamanzi@auca.ac.rw", department: "Engineering", campusId: "AUCA-2023-0256", year: "Year 4" }] as AuthorProfile[],
     supervisor: "Dr. Jean Baptiste Niyonzima",
     department: "Engineering", year: "2025", level: "Undergraduate",
     abstract: "An IoT-enabled water purification system powered by solar energy, with real-time water quality monitoring and mobile alerts for rural communities. Deployed in 3 pilot villages, serving 450+ households.",
