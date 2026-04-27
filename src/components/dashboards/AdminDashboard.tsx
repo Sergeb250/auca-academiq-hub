@@ -1,71 +1,295 @@
-import { Users, FileText, HardDrive, Activity, BarChart3, Shield } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
+import {
+  Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart,
+  ResponsiveContainer, Tooltip, XAxis, YAxis, Line, LineChart
+} from "recharts";
+import { CHART_COLORS } from "@/types";
+import { Smile, Meh, Frown, Users, Activity, BarChart2, PieChart as PieChartIcon } from "lucide-react";
 
-const stats = [
-  { label: "Total Users", value: 1247, icon: Users, color: "text-primary" },
-  { label: "Total Projects", value: 386, icon: FileText, color: "text-secondary" },
-  { label: "Publications", value: 142, icon: BarChart3, color: "text-success" },
-  { label: "Storage Used", value: "12.4 GB", icon: HardDrive, color: "text-warning" },
-  { label: "Active Sessions", value: 34, icon: Activity, color: "text-accent" },
-  { label: "Reservation System", value: "Active", icon: Shield, color: "text-success" },
+/* ─── Mock data ─── */
+
+const participationData = [
+  { name: 'Analysis', Submissions: 12, Surveys: 40 },
 ];
 
-const auditLog = [
-  { action: "User login", user: "Jean Pierre H.", time: "2 min ago" },
-  { action: "Project approved", user: "Alice U. (Moderator)", time: "15 min ago" },
-  { action: "New submission", user: "David M.", time: "32 min ago" },
-  { action: "Reservation created", user: "Grace U.", time: "1 hour ago" },
-  { action: "Publication published", user: "Dr. Sarah M.", time: "2 hours ago" },
+const engagementTrend = [
+  { day: "Mar 15", value: 2 },
+  { day: "Mar 17", value: 3 },
+  { day: "Mar 22", value: 1 },
+  { day: "Mar 24", value: 1 },
+  { day: "Mar 25", value: 1 },
+  { day: "Apr 8", value: 2 },
+  { day: "Apr 21", value: 1 },
+  { day: "Apr 23", value: 1 },
 ];
+
+const satisfactionMix = [
+  { name: "5 Stars", value: 18, fill: "#2563EB" },
+  { name: "4 Stars", value: 12, fill: "#10B981" },
+  { name: "3 Stars", value: 16, fill: "#EF4444" },
+  { name: "1-2 Stars", value: 34, fill: "#F59E0B" },
+];
+
+const recentActivity = [
+  { id: 1, title: "Machine Learning for Early Crop Disease Detection", author: "Grace Uwimana", type: "Thesis", status: "published" as const, timestamp: "2 min ago" },
+  { id: 2, title: "E-Commerce Platform for Local Artisans", author: "Marie Claire N.", type: "Project", status: "under_review" as const, timestamp: "15 min ago" },
+  { id: 3, title: "Kinyarwanda Sentiment Analysis using NLP", author: "Prof. Agnes N.", type: "Publication", status: "published" as const, timestamp: "32 min ago" },
+  { id: 4, title: "Solar Energy Management Dashboard", author: "Patrick K.", type: "Project", status: "pending" as const, timestamp: "1 hour ago" },
+];
+
+const statusBadgeMap: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
+  published: { variant: "default", label: "Published" },
+  approved: { variant: "default", label: "Approved" },
+  pending: { variant: "secondary", label: "Pending" },
+  under_review: { variant: "outline", label: "Under Review" },
+  rejected: { variant: "destructive", label: "Rejected" },
+};
+
+interface CustomPayload {
+  name: string;
+  value: number;
+  payload: Record<string, unknown>;
+  color?: string;
+}
+
+function CustomPieTooltip({ active, payload }: { active?: boolean; payload?: CustomPayload[] }) {
+  if (!active || !payload?.length) return null;
+  const data = payload[0];
+  return (
+    <div className="rounded-lg border border-border bg-card px-3 py-2 shadow-lg">
+      <p className="text-sm font-semibold text-foreground">{data.name}</p>
+      <p className="text-xs text-muted-foreground">{data.value}% of rating</p>
+    </div>
+  );
+}
 
 export function AdminDashboard() {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-heading font-bold text-foreground">Admin Dashboard</h1>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {stats.map((s) => (
-          <div key={s.label} className="bg-card rounded-xl border border-border p-4 card-shadow">
-            <s.icon className={`w-5 h-5 ${s.color} mb-2`} />
-            <p className="text-xl font-heading font-bold text-foreground">{s.value}</p>
-            <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Charts placeholder */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="bg-card rounded-xl border border-border p-5 card-shadow h-64 flex items-center justify-center">
-          <div className="text-center text-muted-foreground">
-            <BarChart3 className="w-10 h-10 mx-auto mb-2 opacity-40" />
-            <p className="text-sm">Submissions per Month</p>
-            <p className="text-xs mt-1">Connect backend for live data</p>
-          </div>
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-heading font-bold text-foreground">Analytics</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            Live performance metrics
+          </p>
         </div>
-        <div className="bg-card rounded-xl border border-border p-5 card-shadow h-64 flex items-center justify-center">
-          <div className="text-center text-muted-foreground">
-            <Activity className="w-10 h-10 mx-auto mb-2 opacity-40" />
-            <p className="text-sm">Department Activity</p>
-            <p className="text-xs mt-1">Connect backend for live data</p>
-          </div>
+        <div className="flex gap-2 text-xs bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full items-center font-medium border border-emerald-200">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+          Live • 12:55:50 PM
         </div>
       </div>
 
-      {/* Audit Log */}
-      <div className="bg-card rounded-xl border border-border card-shadow">
-        <div className="p-5 border-b border-border">
-          <h2 className="font-heading font-semibold text-foreground">Recent Audit Log</h2>
-        </div>
-        <div className="divide-y divide-border">
-          {auditLog.map((e, i) => (
-            <div key={i} className="px-5 py-3 flex items-center justify-between">
-              <div>
-                <p className="text-sm text-foreground">{e.action}</p>
-                <p className="text-xs text-muted-foreground">{e.user}</p>
-              </div>
-              <span className="text-xs text-muted-foreground">{e.time}</span>
+      <div className="bg-blue-50/50 text-blue-800 text-sm p-4 rounded-xl border border-blue-100 flex items-center gap-2">
+        <Activity className="w-4 h-4 text-primary" />
+        <span>Insights are hidden for a cleaner view. Click <span className="font-semibold cursor-pointer hover:underline text-primary">Show Insights</span> whenever you want to review them.</span>
+      </div>
+
+      {/* ── Sentiment Analysis ── */}
+      <Card className="border-border shadow-sm">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Smile className="w-5 h-5 text-primary" />
+              <CardTitle className="text-sm font-heading font-bold tracking-wider uppercase">Sentiment Analysis <span className="text-primary/70 text-[10px]">Rule Engine</span></CardTitle>
             </div>
-          ))}
-        </div>
+            <span className="text-xs text-muted-foreground">Generated by rule-engine | Last updated 12:55 PM</span>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 gap-6">
+            <div className="p-4 rounded-xl border border-border flex items-start gap-4">
+              <Smile className="w-6 h-6 mt-1 text-emerald-500" />
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Positive</p>
+                <p className="text-2xl font-bold text-foreground">14.3%</p>
+                <p className="text-xs text-muted-foreground mt-1">1 response</p>
+                <div className="w-full bg-muted h-1 mt-4 rounded-full overflow-hidden">
+                  <div className="bg-emerald-500 h-full rounded-full" style={{ width: "14.3%" }}></div>
+                </div>
+              </div>
+            </div>
+            <div className="p-4 rounded-xl border border-border flex items-start gap-4">
+              <Meh className="w-6 h-6 mt-1 text-amber-500" />
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Neutral</p>
+                <p className="text-2xl font-bold text-foreground">71.4%</p>
+                <p className="text-xs text-muted-foreground mt-1">5 responses</p>
+                <div className="w-full bg-muted h-1 mt-4 rounded-full overflow-hidden">
+                  <div className="bg-amber-500 h-full rounded-full" style={{ width: "71.4%" }}></div>
+                </div>
+              </div>
+            </div>
+             <div className="p-4 rounded-xl border border-border flex items-start gap-4">
+              <Frown className="w-6 h-6 mt-1 text-red-500" />
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Negative</p>
+                <p className="text-2xl font-bold text-foreground">14.3%</p>
+                <p className="text-xs text-muted-foreground mt-1">1 response</p>
+                <div className="w-full bg-muted h-1 mt-4 rounded-full overflow-hidden">
+                  <div className="bg-red-500 h-full rounded-full" style={{ width: "14.3%" }}></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mt-4">Neutral sentiment is still substantial at 71.4%, which may indicate respondents are not yet forming a clear judgment.</p>
+        </CardContent>
+      </Card>
+
+      {/* ── Middle Row ── */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Participation */}
+        <Card className="border-border shadow-sm">
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <BarChart2 className="w-4 h-4 text-primary" />
+              <CardTitle className="text-sm font-heading font-semibold">Participation Comparison</CardTitle>
+            </div>
+            <CardDescription className="text-xs">Submissions vs surveys this period</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6 relative h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={participationData} margin={{ left: 0, right: 0, top: 40, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/40" />
+                <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={12} fontSize={12} />
+                <YAxis tickLine={false} axisLine={false} tickMargin={12} fontSize={12} domain={[0, 40]} tickCount={5} />
+                <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: 8, border: "none", boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                <Legend iconType="square" iconSize={12} wrapperStyle={{ fontSize: 13, fontWeight: "600", top: -40, right: 0 }} />
+                <Bar dataKey="Submissions" name="Total Submissions" fill="hsl(var(--primary))" radius={[8, 8, 8, 8]} barSize={90} label={{ position: 'top', fill: '#000', fontSize: 12, fontWeight: 600 }} />
+                <Bar dataKey="Surveys" name="Total Surveys" fill="#34d399" radius={[8, 8, 8, 8]} barSize={90} label={{ position: 'top', fill: '#000', fontSize: 12, fontWeight: 600 }} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Engagement Trend */}
+        <Card className="border-border shadow-sm">
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <Activity className="w-4 h-4 text-primary" />
+              <CardTitle className="text-sm font-heading font-semibold">Engagement Trend</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6 h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={engagementTrend} margin={{ left: -20, right: 10, top: 20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorEngage" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/40" />
+                <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={12} fontSize={11} className="text-muted-foreground" />
+                <YAxis tickLine={false} axisLine={false} tickMargin={12} fontSize={11} domain={[0, 3]} tickCount={4} />
+                <Tooltip />
+                <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={3} fillOpacity={1} fill="url(#colorEngage)" dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }} activeDot={{ r: 6 }} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+       {/* ── Bottom Row ── */}
+       <div className="grid gap-6 lg:grid-cols-3">
+        {/* Satisfaction Mix */}
+        <Card className="border-border shadow-sm">
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <PieChartIcon className="w-4 h-4 text-primary" />
+              <CardTitle className="text-sm font-heading font-semibold uppercase tracking-wider">Satisfaction Mix</CardTitle>
+            </div>
+            <CardDescription className="text-xs">Rating distribution</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center pt-2">
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Tooltip content={<CustomPieTooltip />} />
+                <Pie data={satisfactionMix} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={90} strokeWidth={2} stroke="hsl(var(--card))">
+                  {satisfactionMix.map((entry, i) => (
+                    <Cell key={`cell-${i}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="mt-1 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs w-full font-medium">
+              {satisfactionMix.map((d) => (
+                <div key={d.name} className="flex items-center gap-1.5">
+                  <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: d.fill }} />
+                  <span className="text-foreground">{d.name}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Activity Feed */}
+        <Card className="lg:col-span-2 border-border shadow-sm">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-sm font-heading font-semibold uppercase tracking-wider">Question Performance</CardTitle>
+                <CardDescription className="text-xs">Search by question text, survey name, or version.</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <div className="h-10 border rounded-lg mb-4 flex items-center px-3 gap-2">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+               <input type="text" placeholder="Search questions..." className="bg-transparent border-none outline-none flex-1 text-sm" />
+            </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-[11px] uppercase tracking-wider">Question</TableHead>
+                  <TableHead className="text-[11px] uppercase tracking-wider text-right">Avg</TableHead>
+                  <TableHead className="text-[11px] uppercase tracking-wider text-right">Stars</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow className="cursor-pointer hover:bg-accent/40">
+                  <TableCell className="text-sm font-medium text-foreground">
+                    How likely are you to recommend our system to others?
+                  </TableCell>
+                  <TableCell className="text-right font-medium">4.2</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end text-amber-400 text-[10px]">
+                      ★★★★☆
+                    </div>
+                  </TableCell>
+                </TableRow>
+                <TableRow className="cursor-pointer hover:bg-accent/40">
+                  <TableCell className="text-sm font-medium text-foreground">
+                     Rate your overall experience with the new functionality.
+                  </TableCell>
+                  <TableCell className="text-right font-medium">3.8</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end text-amber-400 text-[10px]">
+                      ★★★☆☆
+                    </div>
+                  </TableCell>
+                </TableRow>
+                 <TableRow className="cursor-pointer hover:bg-accent/40">
+                  <TableCell className="text-sm font-medium text-foreground">
+                     Did the support team resolve your issue promptly?
+                  </TableCell>
+                  <TableCell className="text-right font-medium">4.5</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end text-amber-400 text-[10px]">
+                      ★★★★☆
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

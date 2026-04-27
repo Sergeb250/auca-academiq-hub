@@ -1,24 +1,25 @@
 import { useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { mockProjects } from "@/data/mockData";
-import { Search, Eye, Github, Sparkles, Filter } from "lucide-react";
+import { Search, Eye, Github, Library, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import { Card } from "@/components/ui/card";
 
 const typeColors: Record<string, string> = {
-  "Student Project": "bg-primary/10 text-primary border-primary/20",
-  Publication: "bg-success/10 text-success border-success/20",
-  Thesis: "bg-ai/10 text-ai border-ai/20",
+  "Student Project": "bg-[#f0f9ff] text-[#0284c7] border-[#0ea5e9]/40",
+  Publication: "bg-[#ecfdf5] text-[#059669] border-[#10b981]/40",
+  Thesis: "bg-[#f5f3ff] text-[#7c3aed] border-[#7c3aed]/40",
 };
 
 const availColors: Record<string, string> = {
-  Available: "bg-success/10 text-success",
-  "AUCA Only": "bg-primary/10 text-primary",
-  "Reserve to Access": "bg-secondary/10 text-secondary",
-  "Fully Reserved": "bg-warning/10 text-warning",
+  Available: "bg-[#ecfdf5] text-[#059669]",
+  "AUCA Only": "bg-[#f0f9ff] text-[#0284c7]",
+  "Reserve to Access": "bg-[#fefce8] text-[#ca8a04]",
+  "Fully Reserved": "bg-[#fef2f2] text-[#e11d48]",
 };
 
 const BrowsePage = () => {
@@ -43,68 +44,97 @@ const BrowsePage = () => {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <div className="bg-card rounded-xl border border-border p-6 card-shadow">
-          <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search projects, publications, authors, keywords..." className="pl-12 h-12 text-base" />
+        <div className="relative overflow-hidden rounded-xl border-2 border-border bg-card/70 p-8 shadow-[4px_4px_0_hsl(var(--primary)/0.12)] backdrop-blur-sm">
+          <div className="pointer-events-none absolute inset-0 bg-card/30" />
+          <div className="relative mx-auto max-w-2xl">
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by title, abstract, or department…"
+              className="h-14 rounded-xl border-2 border-border bg-background/80 pl-12 text-sm shadow-sm focus-visible:ring-primary"
+            />
           </div>
-          <div className="flex items-center justify-center gap-1 mt-3">
-            <Sparkles className="w-3 h-3 text-ai" />
-            <span className="text-xs text-muted-foreground">Powered by AcademIQ AI</span>
+          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <Library className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+            <span className="font-medium text-foreground/80">Official AUCA repository — published work only</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap">
           {tabs.map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === tab ? "bg-primary text-primary-foreground" : "bg-card border border-border text-muted-foreground hover:text-foreground"}`}>{tab}</button>
+            <button 
+              key={tab} 
+              onClick={() => setActiveTab(tab)} 
+              className={`rounded-md px-4 py-2 text-[11px] font-semibold uppercase tracking-widest transition-all ${activeTab === tab ? "border-2 border-primary bg-primary text-primary-foreground shadow-[2px_2px_0] shadow-foreground/25" : "border-2 border-border bg-transparent text-muted-foreground shadow-sm hover:border-primary/40"}`}
+            >
+              {tab}
+            </button>
           ))}
           <div className="ml-auto flex gap-2">
             <Select defaultValue="recent">
-              <SelectTrigger className="w-40 h-9"><SelectValue placeholder="Sort by" /></SelectTrigger>
+              <SelectTrigger className="h-9 w-40 border-border shadow-sm">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="recent">Most Recent</SelectItem>
                 <SelectItem value="views">Most Viewed</SelectItem>
                 <SelectItem value="title">Title A-Z</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm" className="gap-2 h-9"><Filter className="w-4 h-4" /> Filters</Button>
+            <Button variant="outline" size="sm" className="h-9 gap-2 border-border shadow-sm">
+              <Filter className="h-4 w-4" /> Filters
+            </Button>
           </div>
         </div>
 
-        <p className="text-sm text-muted-foreground">{filtered.length} results</p>
+        <p className="px-1 text-xs font-medium text-muted-foreground">
+          Showing <span className="font-semibold text-primary">{filtered.length}</span>{" "}
+          {filtered.length === 1 ? "result" : "results"}
+        </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((project) => (
-            <div key={project.id} onClick={() => navigate(`/projects/${project.id}`)} className="bg-card rounded-xl border border-border card-shadow hover:card-shadow-hover transition-shadow group cursor-pointer">
-              <div className="p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Badge variant="outline" className={`text-xs ${typeColors[project.type]}`}>{project.type}</Badge>
-                  <span className="text-xs text-muted-foreground ml-auto">{project.year}</span>
+            <Card 
+              key={project.id} 
+              onClick={() => navigate(`/projects/${project.id}`)} 
+              className="group cursor-pointer border-border/80 transition-all hover:border-primary/40 hover:bg-card"
+            >
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <span
+                    className={`rounded-md border px-3 py-1 text-[9px] font-semibold uppercase tracking-widest ${typeColors[project.type] || "border-border bg-transparent text-primary"}`}
+                  >
+                    {project.type}
+                  </span>
+                  <span className="ml-auto text-[10px] font-medium text-muted-foreground">{project.year}</span>
                 </div>
-                <h3 className="font-heading font-semibold text-foreground text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">{project.title}</h3>
-                <div className="flex items-center gap-2 mt-3">
+                <h3 className="mb-4 line-clamp-2 bg-primary/5 px-1 text-[15px] font-semibold italic leading-snug text-foreground transition-colors group-hover:text-primary">
+                  {project.title}
+                </h3>
+
+                <div className="flex items-center gap-3 mt-3">
                   {project.authors.map((a) => (
-                    <div key={a.initials} className="flex items-center gap-1.5">
-                      <div className="w-6 h-6 rounded-full bg-primary/10 text-primary text-[10px] font-semibold flex items-center justify-center">{a.initials}</div>
-                      <span className="text-xs text-muted-foreground">{a.name}</span>
+                    <div key={a.initials} className="flex items-center gap-2">
+                       <div className="flex h-7 w-7 items-center justify-center rounded-lg border-2 border-border text-[10px] font-semibold text-foreground">
+                         {a.initials}
+                       </div>
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground mt-3 line-clamp-3">{project.abstract}</p>
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {(project.technologies?.length ? project.technologies : project.keywords || []).slice(0, 4).map((t) => (
-                    <span key={t} className="px-2 py-0.5 bg-muted text-muted-foreground text-[10px] rounded-full">{t}</span>
-                  ))}
-                </div>
+                <p className="mt-4 line-clamp-3 text-[12px] font-medium leading-relaxed text-muted-foreground">{project.abstract}</p>
               </div>
-              <div className="px-5 py-3 border-t border-border flex items-center justify-between">
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {project.views}</span>
-                  {project.hasGithub && <Github className="w-3.5 h-3.5" />}
+              <div className="flex items-center justify-between border-t-2 border-dashed border-border px-6 py-4">
+                <div className="flex items-center gap-4 text-[10px] font-semibold text-primary">
+                  <span className="flex items-center gap-1.5">
+                    <Eye className="h-3.5 w-3.5" /> {project.views}
+                  </span>
                 </div>
-                <Badge variant="secondary" className={`text-[10px] ${availColors[project.availability]}`}>{project.availability}</Badge>
+                <span className="text-[9px] font-semibold uppercase tracking-widest text-primary">
+                  {project.availability}
+                </span>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

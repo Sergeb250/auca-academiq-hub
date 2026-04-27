@@ -1,15 +1,16 @@
 import { useAuth, UserRole } from "@/contexts/AuthContext";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Search, FileText, CalendarDays, Upload, Bell, HelpCircle,
-  BookOpen, Users, Shield, Settings, BarChart3, Clock, GraduationCap, LogOut,
+  BookOpen, Users, Shield, Settings, BarChart3, Clock, LogOut, ClipboardList,
+  FileCheck, GraduationCap, FolderOpen, Stamp, UserCheck, FileUp,
+  ClipboardCheck, CalendarClock, Armchair, ListChecks, ScrollText,
+  FileSearch, FileScan, BookMarked, Briefcase, Kanban, Award, TrendingUp, PenTool, BookType
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
-import { Badge } from "@/components/ui/badge";
 
 interface NavItem {
   title: string;
@@ -19,90 +20,189 @@ interface NavItem {
   roles: UserRole[];
 }
 
-const navItems: NavItem[] = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, roles: ["student", "lecturer", "moderator", "admin"] },
-  { title: "Browse Repository", url: "/browse", icon: Search, roles: ["student", "lecturer", "moderator", "admin"] },
-  { title: "My Submissions", url: "/my-submissions", icon: FileText, roles: ["student"] },
-  { title: "Submit Project", url: "/submit/project", icon: Upload, roles: ["student"] },
-  { title: "My Publications", url: "/my-publications", icon: BookOpen, roles: ["lecturer"] },
-  { title: "Submit Publication", url: "/submit/publication", icon: Upload, roles: ["lecturer"] },
-  { title: "Supervised Students", url: "/supervised", icon: Users, roles: ["lecturer"] },
-  { title: "Moderation Queue", url: "/moderation", icon: Shield, badge: 5, roles: ["moderator", "admin"] },
-  { title: "User Management", url: "/admin/users", icon: Users, roles: ["admin"] },
-  { title: "Reservation Settings", url: "/admin/reservations", icon: CalendarDays, roles: ["admin"] },
-  { title: "Access Schedule", url: "/admin/schedule", icon: Clock, roles: ["admin"] },
-  { title: "Reports & Audit", url: "/admin/reports", icon: BarChart3, roles: ["admin"] },
-  { title: "Settings", url: "/admin/settings", icon: Settings, roles: ["admin"] },
-  { title: "My Reservations", url: "/my-reservations", icon: CalendarDays, roles: ["student", "lecturer"] },
-  { title: "Notifications", url: "/notifications", icon: Bell, badge: 3, roles: ["student", "lecturer", "moderator", "admin"] },
+interface NavGroup {
+  label: string;
+  items: NavItem[];
+}
+
+/**
+ * Sidebar structure organized by OFFICE / WORKFLOW
+ * Each group maps to a distinct office in the university hierarchy.
+ */
+const navGroups: NavGroup[] = [
+  /* ─── Shared Overview ─── */
+  {
+    label: "Overview",
+    items: [
+      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, roles: ["student", "lecturer", "hod", "moderator", "admin"] },
+      { title: "Browse Archive", url: "/browse", icon: Search, roles: ["student", "lecturer", "hod", "moderator", "admin"] },
+    ],
+  },
+
+  /* ─── Student Office ─── */
+  {
+    label: "Student Records",
+    items: [
+      { title: "My Documents", url: "/my-documents", icon: FolderOpen, roles: ["student"] },
+      { title: "My Submissions", url: "/my-submissions", icon: FileText, roles: ["student"] },
+      { title: "Submit Project", url: "/submit/project", icon: Upload, roles: ["student"] },
+      { title: "Upload Document", url: "/submit/document", icon: FileUp, roles: ["student"] },
+      { title: "Attendance", url: "/my-attendance", icon: ClipboardCheck, roles: ["student"] },
+      { title: "My Reservations", url: "/my-reservations", icon: CalendarDays, roles: ["student"] },
+    ],
+  },
+
+  /* ─── Lecturer Office ─── */
+  {
+    label: "Lecturer Office",
+    items: [
+      { title: "Course Materials", url: "/course-materials", icon: BookType, roles: ["lecturer"] },
+      { title: "Teaching Log", url: "/teaching-log", icon: ClipboardList, roles: ["lecturer"] },
+      { title: "Attendance Mgmt", url: "/attendance-management", icon: UserCheck, roles: ["lecturer"] },
+      { title: "Marks Entry", url: "/marks-entry", icon: PenTool, roles: ["lecturer"] },
+      { title: "Exam Upload", url: "/exam-upload", icon: FileUp, roles: ["lecturer"] },
+      { title: "Supervised Students", url: "/supervised", icon: GraduationCap, roles: ["lecturer"] },
+      { title: "My Publications", url: "/my-publications", icon: BookOpen, roles: ["lecturer"] },
+    ],
+  },
+
+  /* ─── Head of Department ─── */
+  {
+    label: "HOD Office",
+    items: [
+      { title: "Curriculum Mgmt", url: "/hod/curriculum", icon: BookType, roles: ["hod"] },
+      { title: "Teaching Progress", url: "/hod/teaching-progress", icon: TrendingUp, roles: ["hod"] },
+      { title: "Exam Validation", url: "/hod/exam-review", icon: FileCheck, roles: ["hod"] },
+      { title: "Marks Moderation", url: "/hod/marks-moderation", icon: ScrollText, roles: ["hod"] },
+      { title: "Project Supervision", url: "/hod/projects", icon: Kanban, roles: ["hod"] },
+      { title: "Internships", url: "/hod/internships", icon: Briefcase, roles: ["hod"] },
+      { title: "Graduation Lists", url: "/hod/graduations", icon: Award, roles: ["hod"] },
+      { title: "Dept. Reports", url: "/hod/reports", icon: BarChart3, roles: ["hod"] },
+      { title: "Eligibility Lists", url: "/hod/eligibility", icon: ListChecks, roles: ["hod"] },
+    ],
+  },
+
+  /* ─── Examination Office ─── */
+  {
+    label: "Exam Office",
+    items: [
+      { title: "Exam Timetable", url: "/exam-office/timetable", icon: CalendarClock, roles: ["hod", "admin"] },
+      { title: "Seating Plan", url: "/exam-office/seating", icon: Armchair, roles: ["hod", "admin"] },
+      { title: "Eligibility Lists", url: "/exam-office/eligibility", icon: ListChecks, roles: ["admin"] },
+      { title: "Marks Validation", url: "/exam-office/marks", icon: FileCheck, roles: ["admin"] },
+    ],
+  },
+
+  /* ─── Moderator / Library ─── */
+  {
+    label: "Library / Moderation",
+    items: [
+      { title: "Moderation Queue", url: "/moderation", icon: Shield, badge: 5, roles: ["moderator", "admin"] },
+      { title: "Doc Verification", url: "/document-verification", icon: FileScan, roles: ["moderator", "admin"] },
+      { title: "Published Archive", url: "/browse", icon: BookMarked, roles: ["moderator"] },
+    ],
+  },
+
+  /* ─── Admin ─── */
+  {
+    label: "Administration",
+    items: [
+      { title: "User Management", url: "/admin/users", icon: Users, roles: ["admin"] },
+      { title: "Reports & Audit", url: "/admin/reports", icon: BarChart3, roles: ["admin"] },
+      { title: "System Settings", url: "/admin/settings", icon: Settings, roles: ["admin"] },
+    ],
+  },
 ];
 
 export function AppSidebar() {
   const { user, logout } = useAuth();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
-
   if (!user) return null;
 
-  const visibleItems = navItems.filter((item) => item.roles.includes(user.role));
+  const linkBase =
+    "group relative z-10 flex w-full items-center rounded-lg border border-transparent px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:border-primary/15 hover:bg-accent/60 hover:text-foreground";
+  const linkActive =
+    "border-primary/25 bg-card text-foreground shadow-sm shadow-primary/10";
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarContent>
-        {/* Logo */}
-        <div className="px-4 py-5 border-b border-sidebar-border">
+    <Sidebar collapsible="icon" className="z-10 border-r border-border bg-card/90 font-body backdrop-blur-sm">
+      <SidebarContent className="bg-transparent">
+        {/* Brand header */}
+        <div className="border-b border-border px-5 py-5">
           <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-primary-foreground" />
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+              <img src="/auca-logo.png" alt="AUCA" className="h-7 w-7 object-contain" />
             </div>
             {!collapsed && (
               <div>
-                <p className="font-heading font-bold text-sm text-foreground leading-tight">AUCA Connect</p>
-                <p className="text-xs text-primary font-medium">Publication Hub</p>
+                <p className="text-[15px] font-semibold leading-tight tracking-tight text-foreground">AUCA Connect</p>
+                <p className="mt-0.5 text-[10px] font-medium uppercase tracking-widest text-primary">Student Archive System</p>
               </div>
             )}
           </div>
         </div>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {visibleItems.map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/dashboard"}
-                      className="hover:bg-sidebar-accent/70"
-                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                    >
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && (
-                        <span className="flex-1">{item.title}</span>
-                      )}
-                      {!collapsed && item.badge && (
-                        <Badge variant="destructive" className="ml-auto h-5 min-w-5 text-xs">
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* Navigation groups */}
+        {navGroups.map((group) => {
+          const visibleItems = group.items.filter((item) => item.roles.includes(user.role));
+          if (visibleItems.length === 0) return null;
 
-        <SidebarGroup>
-          <SidebarGroupContent>
+          return (
+            <SidebarGroup key={group.label} className="mb-0.5 bg-transparent">
+              <SidebarGroupLabel className="mt-3 px-5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                {group.label}
+              </SidebarGroupLabel>
+              <SidebarGroupContent className="mt-0.5 space-y-0.5 px-3">
+                <SidebarMenu>
+                  {visibleItems.map((item) => (
+                    <SidebarMenuItem key={item.url + item.title}>
+                      <SidebarMenuButton asChild>
+                        <NavLink
+                          to={item.url}
+                          end={item.url === "/dashboard"}
+                          className={linkBase}
+                          activeClassName={linkActive}
+                        >
+                          <item.icon className="mr-3 h-4 w-4 shrink-0 text-primary" />
+                          {!collapsed && <span className="flex-1 truncate">{item.title}</span>}
+                          {!collapsed && item.badge && (
+                            <div className="ml-auto flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground">
+                              {item.badge}
+                            </div>
+                          )}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          );
+        })}
+
+        {/* Bottom utilities */}
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent className="mb-2 px-3">
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <NavLink to="/help" className="hover:bg-sidebar-accent/70" activeClassName="bg-sidebar-accent">
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    {!collapsed && <span>Help</span>}
+                  <NavLink to="/notifications" className={linkBase} activeClassName={linkActive}>
+                    <Bell className="mr-3 h-4 w-4 shrink-0 text-primary" />
+                    {!collapsed && <span className="flex-1 truncate">Notifications</span>}
+                    {!collapsed && (
+                      <div className="ml-auto flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground">
+                        3
+                      </div>
+                    )}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/help" className={linkBase} activeClassName={linkActive}>
+                    <HelpCircle className="mr-3 h-4 w-4 shrink-0 text-primary" />
+                    {!collapsed && <span className="truncate">Help</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -111,20 +211,23 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border p-4">
+      {/* User footer */}
+      <SidebarFooter className="border-t border-border bg-transparent p-4">
         <div className="flex items-center gap-3">
-          <div className="flex-shrink-0 w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-semibold">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border-2 border-border bg-muted/30 text-[13px] font-semibold text-foreground">
             {user.avatarInitials}
           </div>
           {!collapsed && (
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">{user.name}</p>
-              <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[13px] font-semibold text-foreground">{user.name}</p>
+              <p className="text-[11px] font-medium capitalize text-muted-foreground">
+                {user.role === "hod" ? "Head of Dept." : user.role === "moderator" ? "Librarian" : user.role}
+              </p>
             </div>
           )}
           {!collapsed && (
-            <button onClick={logout} className="text-muted-foreground hover:text-destructive transition-colors">
-              <LogOut className="w-4 h-4" />
+            <button type="button" onClick={logout} className="text-muted-foreground transition-colors hover:text-destructive" aria-label="Log out">
+              <LogOut className="h-4 w-4" />
             </button>
           )}
         </div>

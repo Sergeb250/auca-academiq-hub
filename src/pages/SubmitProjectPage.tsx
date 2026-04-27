@@ -6,10 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Upload, Github, X, FileText, Sparkles, Loader2, User } from "lucide-react";
+import { CheckCircle, Upload, Github, X, FileText, Lightbulb, Loader2, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { Card } from "@/components/ui/card";
 import { AuthorProfileCard } from "@/components/AuthorProfileCard";
 import { CoAuthorSearch } from "@/components/CoAuthorSearch";
 import type { AuthorProfile } from "@/data/mockData";
@@ -74,44 +75,52 @@ const SubmitProjectPage = () => {
 
   return (
     <AppLayout>
-      <div className="max-w-3xl mx-auto space-y-6">
-        <h1 className="text-xl font-heading font-bold text-foreground">Submit New Project</h1>
+      <div className="max-w-3xl mx-auto space-y-10">
+        <h1 className="text-3xl font-extrabold text-foreground uppercase tracking-[0.2em] italic relative inline-block">
+           <span className="absolute bottom-1 left-[-5px] right-[-5px] h-[40%] bg-yellow-200/60 -z-10 rounded-sm -rotate-1"></span>
+           Submit New Project
+        </h1>
 
         {/* Stepper */}
-        <div className="flex items-center gap-2">
+        <Card className="flex items-center gap-4 p-4 shadow-[2px_2px_0_hsl(var(--primary)/0.12)] border-white/50 bg-white/30">
           {steps.map((s, i) => (
-            <div key={s.num} className="flex items-center gap-2 flex-1">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                step > s.num ? "bg-success text-success-foreground" : step === s.num ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-              }`}>
+            <div key={s.num} className="flex items-center gap-3 flex-1">
+              <div className={`w-9 h-9 border-2 flex items-center justify-center text-[13px] font-extrabold font-mono transition-all ${
+                step > s.num ? "bg-[#059669] text-white border-[#059669]" : step === s.num ? "border-primary bg-primary text-white" : "border-primary/20 bg-transparent text-muted-foreground"
+              }`} style={{ borderRadius: '12px 4px 12px 4px' }}>
                 {step > s.num ? <CheckCircle className="w-4 h-4" /> : s.num}
               </div>
-              <span className={`text-sm ${step === s.num ? "text-foreground font-medium" : "text-muted-foreground"}`}>{s.label}</span>
-              {i < steps.length - 1 && <div className={`flex-1 h-0.5 ${step > s.num ? "bg-success" : "bg-border"}`} />}
+              <span className={`text-[10px] uppercase tracking-widest font-mono font-extrabold ${step === s.num ? "text-foreground" : "text-primary/60"}`}>{s.label}</span>
+              {i < steps.length - 1 && <div className={`flex-1 h-[2px] ${step > s.num ? "bg-[#059669]" : "bg-primary/10"}`} />}
             </div>
           ))}
-        </div>
+        </Card>
 
         {/* Step 1 */}
         {step === 1 && (
-          <div className="bg-card rounded-xl border border-border p-6 card-shadow space-y-5">
+          <Card className="p-8 relative overflow-hidden space-y-8">
             {/* Author Profile - auto-populated from logged-in account */}
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2"><User className="w-4 h-4 text-primary" /> Author (Linked Account)</Label>
+            <div className="space-y-4">
+              <Label className="flex items-center gap-2 text-xs font-semibold text-primary">
+                <User className="w-4 h-4" aria-hidden />
+                Linked to your account
+              </Label>
               {user && (
-                <AuthorProfileCard
-                  author={{
-                    name: user.name,
-                    initials: user.avatarInitials,
-                    role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
-                    email: user.email,
-                    department: user.department,
-                    campusId: user.campusId,
-                    year: user.year,
-                  }}
-                />
+                <Card className="p-4 bg-white/40 shadow-sm border-border">
+                  <AuthorProfileCard
+                    author={{
+                      name: user.name,
+                      initials: user.avatarInitials,
+                      role: user.role.charAt(0).toUpperCase() + user.role.slice(1),
+                      email: user.email,
+                      department: user.department,
+                      campusId: user.campusId,
+                      year: user.year,
+                    }}
+                  />
+                </Card>
               )}
-              <p className="text-xs text-muted-foreground">This profile will be displayed on your project's public page.</p>
+              <p className="text-xs text-muted-foreground">This section is visible only to you until you submit.</p>
             </div>
 
             {/* Co-Author Search */}
@@ -121,20 +130,20 @@ const SubmitProjectPage = () => {
               onRemove={(campusId) => setCoAuthors((prev) => prev.filter((a) => a.campusId !== campusId))}
               currentUserCampusId={user?.campusId}
             />
-            <div className="space-y-2">
-              <Label>Project Title *</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter your project title" />
+            <div className="space-y-4">
+              <Label className="text-[11px] font-extrabold uppercase tracking-widest font-mono text-foreground">Project Title *</Label>
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="ENTER_TITLE_HERE..." className="h-12 bg-white/40 border-2 border-border focus-visible:border-primary font-mono rounded-lg shadow-sm" />
             </div>
-            <div className="space-y-2">
-              <Label>Abstract *</Label>
-              <Textarea value={abstract} onChange={(e) => setAbstract(e.target.value)} placeholder="Write a detailed abstract..." rows={5} />
+            <div className="space-y-4">
+              <Label className="text-[11px] font-extrabold uppercase tracking-widest font-mono text-foreground">Abstract *</Label>
+              <Textarea value={abstract} onChange={(e) => setAbstract(e.target.value)} placeholder="WRITE_ABSTRACT_LEAD..." rows={6} className="bg-white/40 border-2 border-border focus-visible:border-primary font-mono rounded-lg shadow-sm" />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Department *</Label>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <Label className="text-[11px] font-extrabold uppercase tracking-widest font-mono text-foreground">Department *</Label>
                 <Select value={department} onValueChange={setDepartment}>
-                  <SelectTrigger><SelectValue placeholder="Select department" /></SelectTrigger>
-                  <SelectContent>
+                  <SelectTrigger className="bg-white/40 border-2 border-border font-mono shadow-sm"><SelectValue placeholder="SELECT_DEPT..." /></SelectTrigger>
+                  <SelectContent className="font-mono">
                     <SelectItem value="it">Information Technology</SelectItem>
                     <SelectItem value="cs">Computer Science</SelectItem>
                     <SelectItem value="eng">Engineering</SelectItem>
@@ -145,11 +154,11 @@ const SubmitProjectPage = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label>Category *</Label>
+              <div className="space-y-4">
+                <Label className="text-[11px] font-extrabold uppercase tracking-widest font-mono text-foreground">Category *</Label>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
-                  <SelectContent>
+                  <SelectTrigger className="bg-white/40 border-2 border-border font-mono shadow-sm"><SelectValue placeholder="SELECT_CAT..." /></SelectTrigger>
+                  <SelectContent className="font-mono">
                     <SelectItem value="software">Software System</SelectItem>
                     <SelectItem value="research">Research Study</SelectItem>
                     <SelectItem value="data">Data Analysis</SelectItem>
@@ -158,157 +167,152 @@ const SubmitProjectPage = () => {
                 </Select>
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>Keywords</Label>
+            <div className="space-y-4">
+              <Label className="text-[11px] font-extrabold uppercase tracking-widest font-mono text-foreground">Technology Stack</Label>
               <div className="flex gap-2">
-                <Input value={keywordInput} onChange={(e) => setKeywordInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addKeyword())} placeholder="Add keyword and press Enter" />
-                <Button type="button" variant="outline" onClick={addKeyword}>Add</Button>
+                <Input value={techInput} onChange={(e) => setTechInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addTech())} placeholder="ADD_TECH..." className="bg-white/40 border-2 border-border font-mono h-11 shadow-sm" />
+                <Button type="button" variant="outline" onClick={addTech} className="border-2 border-border font-mono uppercase tracking-widest text-[11px] font-extrabold px-6 hover:bg-primary/10 hover:border-border">Add</Button>
               </div>
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                {keywords.map((k) => (
-                  <Badge key={k} variant="outline" className="gap-1 bg-primary/5 text-primary">
-                    {k} <X className="w-3 h-3 cursor-pointer" onClick={() => setKeywords(keywords.filter((x) => x !== k))} />
-                  </Badge>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Technology Stack</Label>
-              <div className="flex gap-2">
-                <Input value={techInput} onChange={(e) => setTechInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addTech())} placeholder="Add technology and press Enter" />
-                <Button type="button" variant="outline" onClick={addTech}>Add</Button>
-              </div>
-              <div className="flex flex-wrap gap-1.5 mt-2">
+              <div className="flex flex-wrap gap-2 mt-2">
                 {technologies.map((t) => (
-                  <Badge key={t} variant="secondary" className="gap-1">
-                    {t} <X className="w-3 h-3 cursor-pointer" onClick={() => setTechnologies(technologies.filter((x) => x !== t))} />
+                  <Badge key={t} className="bg-[#f5f3ff] text-[#7c3aed] border-2 border-[#7c3aed]/20 font-mono px-3 py-1 rounded-md">
+                    {t} <X className="w-3 h-3 cursor-pointer ml-2" onClick={() => setTechnologies(technologies.filter((x) => x !== t))} />
                   </Badge>
                 ))}
               </div>
             </div>
 
-            <div className="p-3 bg-ai/5 border border-ai/20 rounded-lg flex items-center gap-2 text-sm">
-              <Sparkles className="w-4 h-4 text-ai" />
-              <span className="text-muted-foreground">AcademIQ found <strong className="text-foreground">2 similar projects</strong> — review before submitting to avoid duplication.</span>
+            <Card className="p-4 bg-white/40 border-border flex items-start gap-3 text-sm shadow-sm">
+              <Lightbulb className="w-5 h-5 text-primary shrink-0 mt-0.5" aria-hidden />
+              <span className="text-muted-foreground leading-snug">
+                Before you continue, browse the repository for existing work on your topic so your submission stays original and well grounded.
+              </span>
+            </Card>
+ 
+            <div className="flex justify-end pt-4">
+              <Button onClick={() => setStep(2)} disabled={!title || !abstract} className="bg-primary hover:bg-primary/90 text-white font-mono font-extrabold uppercase tracking-widest px-8 py-6 rounded-lg text-[13px] border-2 border-white shadow-[4px_4px_0_hsl(var(--primary)/0.2)]">
+                Next: Memoir Upload
+              </Button>
             </div>
-
-            <div className="flex justify-end">
-              <Button onClick={() => setStep(2)} disabled={!title || !abstract}>Next: Memoir Upload</Button>
-            </div>
-          </div>
+          </Card>
         )}
 
         {/* Step 2 */}
         {step === 2 && (
-          <div className="bg-card rounded-xl border border-border p-6 card-shadow space-y-5">
+          <Card className="p-8 relative overflow-hidden space-y-8">
             {!uploaded ? (
               <div
-                className="border-2 border-dashed border-primary/30 rounded-xl p-12 text-center cursor-pointer hover:bg-primary/5 transition-colors"
+                className="border-4 border-dashed border-white/60 rounded-xl p-16 text-center cursor-pointer hover:bg-white/20 transition-all group"
                 onClick={simulateUpload}
               >
-                <Upload className="w-10 h-10 text-primary mx-auto mb-3" />
-                <p className="text-sm font-medium text-foreground">Click to upload your memoir (PDF)</p>
-                <p className="text-xs text-muted-foreground mt-1">PDF only, max 50MB</p>
+                <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
+                  <Upload className="w-8 h-8 text-white" />
+                </div>
+                <p className="text-[14px] font-extrabold text-foreground uppercase tracking-widest font-mono">UPLOAD_MEMOIR_PDF</p>
+                <p className="text-[10px] text-primary mt-2 font-mono">MAX_FILE_SIZE: 50MB // SYSTEM_VERIFIED_ONLY</p>
               </div>
             ) : null}
-
+ 
             {uploadProgress > 0 && uploadProgress < 100 && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{fileName}</span>
-                  <span className="text-primary font-medium">{uploadProgress}%</span>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between font-mono text-[11px] font-extrabold text-foreground">
+                  <span>{fileName}</span>
+                  <span>{uploadProgress}%_COMPLETE</span>
                 </div>
-                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                <div className="w-full h-3 bg-white/40 rounded-full overflow-hidden border-2 border-white/60">
                   <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${uploadProgress}%` }} />
                 </div>
               </div>
             )}
-
+ 
             {uploaded && (
-              <div className="border border-success/30 bg-success/5 rounded-xl p-5">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-6 h-6 text-success" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{fileName}</p>
-                    <p className="text-xs text-muted-foreground mt-1">78 pages · 4.2 MB · SHA-256: a1b2c3d4e5f6...</p>
-                    <p className="text-xs text-success mt-1">✓ Malware scan passed</p>
+              <div className="border-2 border-border bg-white/40 rounded-xl p-6 shadow-sm">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[#059669] rounded-xl flex items-center justify-center border-2 border-white shadow-sm">
+                    <CheckCircle className="w-7 h-7 text-white" />
                   </div>
-                </div>
-                <div className="mt-4 w-32 h-40 bg-muted rounded-lg flex items-center justify-center">
-                  <FileText className="w-8 h-8 text-muted-foreground" />
+                  <div>
+                    <p className="text-[13px] font-extrabold text-foreground font-mono">{fileName}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1 font-mono uppercase tracking-wider opacity-70">78 PAGES // SHA-256_VERIFIED</p>
+                    <p className="text-[10px] text-[#059669] mt-1 font-mono font-extrabold">✓ MALWARE_SCAN_SUCCESS_ARCHIVE_READY</p>
+                  </div>
                 </div>
               </div>
             )}
-
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-              <Button onClick={() => setStep(3)} disabled={!uploaded}>Next: GitHub Repository</Button>
+ 
+            <div className="flex justify-between pt-4">
+              <Button variant="outline" onClick={() => setStep(1)} className="border-2 border-white font-mono uppercase tracking-widest text-[11px] font-extrabold px-8 py-5">Back</Button>
+              <Button onClick={() => setStep(3)} disabled={!uploaded} className="bg-primary hover:bg-primary/90 text-white font-mono font-extrabold uppercase tracking-widest px-8 py-5 rounded-lg text-[11px] border-2 border-white shadow-[4px_4px_0_hsl(var(--primary)/0.2)]">Next: GitHub Repository</Button>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Step 3 */}
         {step === 3 && (
-          <div className="bg-card rounded-xl border border-border p-6 card-shadow space-y-5">
+          <Card className="p-8 relative overflow-hidden space-y-8">
             {!githubConnected ? (
-              <div className="text-center py-8">
-                <Github className="w-10 h-10 text-foreground mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground mb-4">Connect your GitHub account to link your repository</p>
-                <Button onClick={() => setGithubConnected(true)} className="gap-2">
-                  <Github className="w-4 h-4" /> Connect GitHub
+              <div className="text-center py-10">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-foreground shadow-lg">
+                  <Github className="w-9 h-9 text-white" />
+                </div>
+                <p className="text-[13px] font-mono font-extrabold text-muted-foreground uppercase tracking-[0.2em] mb-6">// CONNECT_REPOSITORY_INDEX</p>
+                <Button onClick={() => setGithubConnected(true)} className="bg-white hover:bg-white/90 text-foreground font-mono font-extrabold uppercase tracking-widest px-8 py-6 rounded-lg text-[12px] border-2 border-foreground shadow-[4px_4px_0_hsl(var(--primary)/0.2)]">
+                  <Github className="w-4 h-4 mr-2" /> Link_Remote_Repo
                 </Button>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="p-3 bg-success/5 border border-success/20 rounded-lg flex items-center gap-2 text-sm">
-                  <CheckCircle className="w-4 h-4 text-success" />
-                  <span className="text-foreground">GitHub connected as <strong>jpierre-auca</strong></span>
+              <div className="space-y-6">
+                <div className="p-4 bg-[#ecfdf5] border-2 border-[#10b981]/40 rounded-xl flex items-center gap-3 text-[12px] font-mono font-extrabold text-[#059669]">
+                  <CheckCircle className="w-5 h-5" />
+                  <span>SESSION_AUTH: GITHUB_CONNECTED_AS [jpierre-auca]</span>
                 </div>
-
-                <div className="space-y-2">
-                  <Label>Select Repository</Label>
+ 
+                <div className="space-y-4">
+                  <Label className="text-[11px] font-extrabold uppercase tracking-widest font-mono text-foreground">Select Repository</Label>
                   <Select value={selectedRepo} onValueChange={setSelectedRepo}>
-                    <SelectTrigger><SelectValue placeholder="Choose a repository" /></SelectTrigger>
-                    <SelectContent>
+                    <SelectTrigger className="bg-white/40 border-2 border-border font-mono h-12 shadow-sm"><SelectValue placeholder="SELECT_REMOTE_INDEX..." /></SelectTrigger>
+                    <SelectContent className="font-mono">
                       <SelectItem value="smart-parking-iot">smart-parking-iot (public)</SelectItem>
                       <SelectItem value="crop-disease-ml">crop-disease-ml (public)</SelectItem>
                       <SelectItem value="my-project">my-final-year-project (private)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-
+ 
                 {selectedRepo && (
                   <>
-                    <div className="space-y-2">
-                      <Label>Final Commit / Tag</Label>
+                    <div className="space-y-4">
+                      <Label className="text-[11px] font-extrabold uppercase tracking-widest font-mono text-foreground">Final Commit / Tag</Label>
                       <Select defaultValue="latest">
-                        <SelectTrigger><SelectValue /></SelectTrigger>
-                        <SelectContent>
+                        <SelectTrigger className="bg-white/40 border-2 border-border font-mono h-12 shadow-sm"><SelectValue /></SelectTrigger>
+                        <SelectContent className="font-mono">
                           <SelectItem value="latest">a3f8b2c — "Final submission version" (2 days ago)</SelectItem>
                           <SelectItem value="prev1">b1c2d3e — "Fix auth bug" (5 days ago)</SelectItem>
                           <SelectItem value="prev2">c4d5e6f — "Add unit tests" (1 week ago)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" id="final" checked={markedFinal} onChange={(e) => setMarkedFinal(e.target.checked)} className="rounded" />
-                      <Label htmlFor="final" className="text-sm font-normal">Mark as Final Version</Label>
+ 
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center h-5">
+                        <input type="checkbox" id="final" checked={markedFinal} onChange={(e) => setMarkedFinal(e.target.checked)} className="w-5 h-5 rounded border-2 border-primary/25 text-primary focus:ring-primary" />
+                      </div>
+                      <Label htmlFor="final" className="text-[12px] font-extrabold font-mono text-foreground uppercase tracking-wider cursor-pointer">Mark as Final Archive Version</Label>
                     </div>
                   </>
                 )}
               </div>
             )}
-
-            <p className="text-xs text-muted-foreground italic">Draft saved 2 minutes ago</p>
-
-            <div className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
-              <Button onClick={handleSubmit} disabled={submitting} className="gap-2">
-                {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : "Submit for Review"}
+ 
+            <p className="text-[10px] text-primary font-mono italic">{">>"} AUTO_SAVE_COMPLETED: 2min_ago</p>
+ 
+            <div className="flex justify-between pt-4">
+              <Button variant="outline" onClick={() => setStep(2)} className="border-2 border-white font-mono uppercase tracking-widest text-[11px] font-extrabold px-8 py-5">Back</Button>
+              <Button onClick={handleSubmit} disabled={submitting} className="bg-primary hover:bg-primary/90 text-white font-mono font-extrabold uppercase tracking-widest px-10 py-6 rounded-lg text-[13px] border-2 border-white shadow-[4px_4px_0_hsl(var(--primary)/0.2)]">
+                {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Processing...</> : "Submit for Review"}
               </Button>
             </div>
-          </div>
+          </Card>
         )}
       </div>
     </AppLayout>

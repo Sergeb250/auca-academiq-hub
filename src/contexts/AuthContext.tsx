@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, ReactNode } from "react";
+import type { UserRole } from "@/types/user";
 
-export type UserRole = "student" | "lecturer" | "moderator" | "admin";
+// Re-export the type for backward compatibility
+export type { UserRole };
 
 export interface User {
   id: string;
@@ -33,6 +35,11 @@ const MOCK_USERS: Record<string, User> = {
     id: "u2", name: "Dr. Sarah Mugisha", email: "lecturer@auca.ac.rw",
     role: "lecturer", department: "Computer Science", campusId: "AUCA-FAC-0032",
     avatarInitials: "SM",
+  },
+  "hod@auca.ac.rw": {
+    id: "u5", name: "Dr. Robert Mugabo", email: "hod@auca.ac.rw",
+    role: "hod", department: "Information Technology", campusId: "AUCA-HOD-0004",
+    avatarInitials: "RM",
   },
   "moderator@auca.ac.rw": {
     id: "u3", name: "Alice Uwimana", email: "moderator@auca.ac.rw",

@@ -1,40 +1,35 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Shield, Eye, EyeOff, BookOpen, Loader2, Mail, Phone, X, Lock, AlertTriangle } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
+import { Eye, EyeOff, Loader2, Mail, Lock, AlertTriangle, ArrowRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 const MAX_ATTEMPTS = 5;
-const LOCKOUT_SECONDS = 900; // 15 minutes
+const LOCKOUT_SECONDS = 900;
 
-const ERROR_MESSAGES: Record<string, { title: string; description: string }> = {
-  "ERR-VER-404": {
-    title: "ERR-VER-404",
-    description: "Your ID was not found in the AUCA campus database. Contact ICT support if you believe this is an error.",
-  },
-  "ERR-AUTH-401": {
-    title: "ERR-AUTH-401",
-    description: "Incorrect password. You have {remaining} attempts remaining before your account is temporarily locked.",
-  },
-  "ERR-AUTH-429": {
-    title: "ERR-AUTH-429",
-    description: "Account temporarily locked. Please try again in {minutes} minutes.",
-  },
+const ERROR_MESSAGES = {
+  "ERR-AUTH-401": { title: "Invalid Credentials", description: "The email or password you entered is incorrect. You have {remaining} attempts left." },
+  "ERR-VER-404": { title: "Account Not Found", description: "No account exists with this email address. Please register or contact IT." },
+  "ERR-AUTH-429": { title: "Account Locked", description: "Too many failed attempts. Your account is temporarily locked for {minutes} minutes." },
+  "ERR-NET-503": { title: "Connection Error", description: "Unable to connect to authentication server. Please check your internet connection." },
 };
+
+const DEMO_EMAILS = [
+  "student@auca.ac.rw",
+  "lecturer@auca.ac.rw",
+  "hod@auca.ac.rw",
+  "moderator@auca.ac.rw",
+  "admin@auca.ac.rw",
+];
 
 const LoginPage = () => {
   const { login, isLoading } = useAuth();
@@ -52,8 +47,7 @@ const LoginPage = () => {
 
   const isLocked = lockoutUntil !== null && Date.now() < lockoutUntil;
 
-  // Update lockout timer display
-  useState(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       if (lockoutUntil && Date.now() < lockoutUntil) {
         const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
@@ -67,7 +61,7 @@ const LoginPage = () => {
       }
     }, 1000);
     return () => clearInterval(interval);
-  });
+  }, [lockoutUntil]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,60 +108,36 @@ const LoginPage = () => {
 
   const handleForgotPassword = () => {
     setForgotSent(true);
-    // In real app, would call API
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-primary/5">
-      {/* Geometric background pattern */}
-      <div className="absolute inset-0 opacity-[0.04]" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231A4B8C' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-      }} />
-
-      <div className="w-full max-w-md relative z-10">
-        {/* Logo & Branding */}
-        <div className="text-center mb-8">
-          <img
-            src="/auca-logo.png"
-            alt="Adventist University of Central Africa Logo"
-            className="w-24 h-24 object-contain mx-auto mb-4"
-          />
-          <h1 className="text-2xl font-heading font-bold text-foreground">
-            AUCA Connect
-          </h1>
-          <p className="text-lg font-heading font-semibold text-primary">
-            Publication Hub
-          </p>
-          <p className="text-sm text-muted-foreground mt-2 italic">
-            "Preserving Knowledge. Enabling Discovery."
-          </p>
+    <div className="relative flex min-h-screen w-full flex-col bg-background font-sans">
+      <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
+        <div className="mb-8 flex items-center gap-3">
+          <img src="/auca-logo.png" alt="AUCA" className="h-10 w-10 object-contain" />
+          <div>
+            <p className="text-lg font-semibold text-foreground">AUCA Connect</p>
+            <p className="text-xs text-muted-foreground">Publication Hub</p>
+          </div>
         </div>
 
-        {/* Login Card */}
-        <div className="bg-card rounded-xl border border-border card-shadow p-8">
-          <div className="flex items-center gap-2 mb-6 justify-center">
-            <BookOpen className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-heading font-semibold text-foreground">
-              Sign In to Your Account
-            </h2>
-          </div>
+        <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 shadow-sm">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Sign in</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Use your university email and password.</p>
 
-          {/* Lockout Warning */}
           {isLocked && (
-            <div className="mb-4 flex items-center gap-2 bg-destructive/10 border border-destructive/20 rounded-lg px-4 py-3 text-sm">
-              <AlertTriangle className="w-4 h-4 text-destructive flex-shrink-0" />
+            <div className="mt-6 flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3">
+              <AlertTriangle className="h-5 w-5 shrink-0 text-destructive" />
               <div>
-                <p className="font-medium text-destructive">Account Temporarily Locked</p>
-                <p className="text-destructive/80 text-xs mt-0.5">Try again in {lockoutDisplay}</p>
+                <p className="text-sm font-medium text-destructive">Account locked</p>
+                <p className="text-xs text-muted-foreground">Try again in {lockoutDisplay}</p>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-foreground">
-                University Email or Campus ID
-              </Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -176,148 +146,123 @@ const LoginPage = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLocked}
+                autoComplete="email"
                 className="h-11"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                Password
-              </Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label htmlFor="password">Password</Label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForgotOpen(true);
+                    setForgotSent(false);
+                    setForgotEmail("");
+                  }}
+                  className="text-xs font-medium text-muted-foreground hover:text-foreground"
+                >
+                  Forgot password?
+                </button>
+              </div>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLocked}
+                  autoComplete="current-password"
                   className="h-11 pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               {failedAttempts > 0 && !isLocked && (
-                <p className="text-xs text-destructive flex items-center gap-1">
-                  <Lock className="w-3 h-3" />
-                  {MAX_ATTEMPTS - failedAttempts} attempt{MAX_ATTEMPTS - failedAttempts !== 1 ? "s" : ""} remaining
+                <p className="flex items-center gap-1.5 text-xs text-destructive">
+                  <Lock className="h-3 w-3 shrink-0" />
+                  {MAX_ATTEMPTS - failedAttempts} attempts remaining
                 </p>
               )}
             </div>
 
-            {/* Verification Badge */}
-            {(isLoading || verifying) && (
-              <div className="flex items-center gap-2 bg-primary/5 border border-primary/20 rounded-lg px-4 py-3 text-sm">
-                <Shield className="w-4 h-4 text-primary animate-pulse" />
-                <span className="text-muted-foreground">Verifying campus identity...</span>
-                <Loader2 className="w-4 h-4 text-primary animate-spin ml-auto" />
-              </div>
-            )}
-
             <Button
               type="submit"
-              className="w-full h-11 font-semibold"
+              className="h-11 w-full"
               disabled={isLoading || verifying || isLocked}
             >
               {isLoading || verifying ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Verifying campus identity...</>
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                "Sign In"
+                <>
+                  Sign in
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-80" />
+                </>
               )}
             </Button>
           </form>
 
-          {/* Campus Verification Badge */}
-          <div className="mt-4 flex items-center justify-center gap-2 text-xs text-primary">
-            <Shield className="w-3.5 h-3.5" />
-            <span className="font-medium">Secured by AUCA Campus Identity Verification</span>
-          </div>
-
-          <div className="mt-5 flex items-center justify-between text-sm">
-            <button
-              onClick={() => { setForgotOpen(true); setForgotSent(false); setForgotEmail(""); }}
-              className="text-secondary hover:underline"
-            >
-              Forgot password?
-            </button>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="text-muted-foreground hover:text-foreground flex items-center gap-1">
-                  <Phone className="w-3 h-3" />
-                  Help Desk
+          <p className="mt-8 border-t border-border pt-6 text-center text-xs text-muted-foreground">
+            Demo: any password works. Try{" "}
+            {DEMO_EMAILS.map((addr, i) => (
+              <React.Fragment key={addr}>
+                {i > 0 && ", "}
+                <button
+                  type="button"
+                  className="font-medium text-primary hover:underline"
+                  onClick={() => setEmail(addr)}
+                >
+                  {addr.split("@")[0]}
                 </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs space-y-1 max-w-[220px]">
-                <p className="font-semibold">ICT Help Desk</p>
-                <p className="flex items-center gap-1"><Mail className="w-3 h-3" /> ict.helpdesk@auca.ac.rw</p>
-                <p className="flex items-center gap-1"><Phone className="w-3 h-3" /> +250 788 000 000</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-
-          {/* Demo hint */}
-          <div className="mt-5 p-3 bg-muted rounded-lg text-xs text-muted-foreground">
-            <p className="font-medium mb-1">Demo Accounts (any password):</p>
-            <p>student@auca.ac.rw · lecturer@auca.ac.rw</p>
-            <p>moderator@auca.ac.rw · admin@auca.ac.rw</p>
-          </div>
+              </React.Fragment>
+            ))}
+            .
+          </p>
         </div>
-
-        {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          © 2025 AUCA Connect Publication Hub — Adventist University of Central Africa | Internal Use Only
-        </p>
       </div>
 
-      {/* Forgot Password Modal */}
       <Dialog open={forgotOpen} onOpenChange={setForgotOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md rounded-xl">
           <DialogHeader>
-            <DialogTitle className="font-heading">Reset Password</DialogTitle>
+            <DialogTitle>Reset password</DialogTitle>
             <DialogDescription>
-              Enter your university email address. If the account exists, we'll send a reset link.
+              Enter your university email. You will receive a link if an account exists.
             </DialogDescription>
           </DialogHeader>
 
           {!forgotSent ? (
             <div className="space-y-4 pt-2">
-              <div className="space-y-2">
-                <Label htmlFor="forgot-email">University Email</Label>
-                <Input
-                  id="forgot-email"
-                  type="email"
-                  placeholder="name@auca.ac.rw"
-                  value={forgotEmail}
-                  onChange={(e) => setForgotEmail(e.target.value)}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                For security, we do not reveal whether an account exists for a given email address.
-              </p>
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setForgotOpen(false)}>Cancel</Button>
-                <Button onClick={handleForgotPassword} disabled={!forgotEmail}>
-                  Send Reset Link
-                </Button>
-              </div>
+              <Input
+                id="forgot-email"
+                type="email"
+                placeholder="name@auca.ac.rw"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                className="h-11"
+              />
+              <Button onClick={handleForgotPassword} disabled={!forgotEmail} className="w-full">
+                Send reset link
+              </Button>
             </div>
           ) : (
-            <div className="text-center py-4 space-y-3">
-              <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mx-auto">
-                <Mail className="w-6 h-6 text-success" />
+            <div className="space-y-4 py-2 text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-border bg-muted/50">
+                <Mail className="h-6 w-6 text-muted-foreground" />
               </div>
-              <p className="text-sm text-foreground font-medium">Check your email</p>
-              <p className="text-xs text-muted-foreground">
-                If an AUCA account exists for <strong>{forgotEmail}</strong>, a password reset link has been sent.
+              <p className="text-sm font-medium text-foreground">Check your email</p>
+              <p className="text-sm text-muted-foreground">
+                If <span className="font-medium text-foreground">{forgotEmail}</span> is registered, a link will arrive shortly.
               </p>
-              <Button variant="outline" onClick={() => setForgotOpen(false)} className="mt-2">
+              <Button variant="outline" className="w-full" onClick={() => setForgotOpen(false)}>
                 Close
               </Button>
             </div>

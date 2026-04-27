@@ -1,3 +1,12 @@
-# Welcome to your Lovable project
+# AUCA Connect Publication Hub
 
-TODO: Document your project here
+Project documentation has been exported to:
+
+- [`docs/PROJECT_DOCUMENTATION.md`](docs/PROJECT_DOCUMENTATION.md)
+
+Quick start:
+
+```bash
+npm install
+npm run dev
+```
